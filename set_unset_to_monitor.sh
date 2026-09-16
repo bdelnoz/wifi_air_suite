@@ -61,4 +61,3 @@ elif [ "$ACTION" == "unset" ]; then
 
   echo "[*] Interface $IFACE en mode managed et gérée par NetworkManager."
 fi
-

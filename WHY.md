@@ -3,18 +3,31 @@ DOCUMENT INFORMATION
 Document Name: WHY.md
 Author: Bruno DELNOZ
 Email: bruno.delnoz@protonmail.com
-Version: v2.0.0
-Date / Time: 2026-09-16 02:30
+Version: v2.1.1
+Date / Time: 2026-09-16 03:05
 Project: Package scan WIFI / wifi_air_suite.sh
 Short description: Design rationale and compatibility decisions for the current implementation.
 -->
-# WHY — wifi_air_suite.sh — v2.0.0
+# WHY — wifi_air_suite.sh — v2.1.1
 
 ## Why a major version
 
 Version 2.0.0 introduces a new capture execution model: one logical capture session can contain multiple independent `airodump-ng` slices.
 
 That changes the workflow enough to justify a major version while preserving the existing CLI, directories and output formats.
+
+
+## Why the monitor helper now lives beside the main script
+
+The project is now a standalone public repository. Keeping `set_unset_to_monitor.sh` beside `wifi_air_suite.sh` removes the old dependency on a parent-project `tools/monitor/` tree and makes the repository self-contained. The main script therefore resolves the helper relative to its own directory with `$BASE_DIR/set_unset_to_monitor.sh`.
+
+## Why filtered Markdown exists
+
+The filtered CSV remains the machine-oriented reference output, but it is not pleasant to inspect repeatedly in a text editor. v2.1.0 therefore creates a Markdown representation from the **already-filtered CSV**. This avoids a second filtering implementation and guarantees that CSV and Markdown are based on the same selected rows.
+
+## Why `--open-kate` is optional
+
+Opening an editor is a desktop convenience, not a capture requirement. The default remains headless-compatible. When `--open-kate` is explicitly supplied together with `--post-process`, the newly generated Markdown is opened asynchronously, so the next interval is not blocked by the editor.
 
 ## Why `--interval` exists
 

@@ -3,12 +3,12 @@ DOCUMENT INFORMATION
 Document Name: SPECIFICATIONS_GLOBAL.md
 Author: Bruno DELNOZ
 Email: bruno.delnoz@protonmail.com
-Version: v2.0.0
-Date / Time: 2026-09-16 02:30
+Version: v2.1.1
+Date / Time: 2026-09-16 03:05
 Project: Package scan WIFI / wifi_air_suite.sh
 Short description: Stable global requirements and contracts for the wifi_air_suite.sh project.
 -->
-# SPECIFICATIONS_GLOBAL — wifi_air_suite.sh — v2.0.0
+# SPECIFICATIONS_GLOBAL — wifi_air_suite.sh — v2.1.1
 
 ## 1. Purpose
 Define stable project-wide behavior that task-scoped changes must preserve unless explicitly superseded.
@@ -39,8 +39,9 @@ CRACK requires explicit BSSID and wordlist.
 ## 4. Repository architecture
 
 ```text
-cmd.analyse.airo.sniff/
+wifi_air_suite/
 ├── wifi_air_suite.sh
+├── set_unset_to_monitor.sh
 ├── README.md
 ├── INSTALL.md
 ├── CHANGELOG.md
@@ -73,7 +74,14 @@ cmd.analyse.airo.sniff/
 16. Monitor mode is entered once for the logical capture session and preserved between slices.
 17. Runtime paths remain compatible.
 18. Existing processed-output naming remains compatible.
-19. Behavior without `--interval` remains compatible.
+19. Every `--post-process` generates a Markdown equivalent of the filtered CSV in `filtered/`.
+20. `--open-kate` is CAPTURE-only, requires `--post-process`, and opens the filtered Markdown asynchronously.
+21. Filtered Markdown is also copied to `generated/`.
+22. Behavior without `--open-kate` remains headless-compatible.
+23. Behavior without `--interval` remains compatible.
+
+24. `set_unset_to_monitor.sh` is resolved from the same directory as `wifi_air_suite.sh` via `$BASE_DIR`.
+25. The current repository has no runtime dependency on a parent `tools/monitor/` tree.
 
 ## 6. Global non-functional requirements
 
@@ -112,7 +120,7 @@ optional wordlist
 
 Control/info actions include `--help`, `--exec`, `--simulate`, `--prerequis`, `--install`, `--stop`, `--changelog`, `--purge`, `--doctor`, `--init`, `--show-paths`, `--print-config`, `--list-captures`, `--list-csv`, `--clean-tmp`, `--version`.
 
-Key CAPTURE options include `--interface`, `--duration`, `--infinite`, `--interval`, `--post-process`, `--no-post-process`, `--accept`, `--archive-old`, `--spinner`, `--no-spinner`, `--exclusions-file`, `--dest_dir`.
+Key CAPTURE options include `--interface`, `--duration`, `--infinite`, `--interval`, `--post-process`, `--no-post-process`, `--accept`, `--archive-old`, `--spinner`, `--no-spinner`, `--open-kate`, `--exclusions-file`, `--dest_dir`.
 
 ## 10. Constraints and safety rules
 
@@ -152,3 +160,13 @@ External Git workflow, hardware RF performance, third-party driver bugs, and aut
 - Established canonical execution/simulation gates.
 - Established action separation and `.results/`.
 - Established the four-file specification model.
+
+## Changelog
+
+### v2.1.1 — 2026-09-16
+- Canonical repository architecture now places the monitor helper beside the main script.
+- Helper resolution is relative to `$BASE_DIR`.
+
+### v2.1.0 — 2026-09-16
+- Added filtered Markdown as a stable post-process artifact.
+- Added optional asynchronous `--open-kate` behavior.

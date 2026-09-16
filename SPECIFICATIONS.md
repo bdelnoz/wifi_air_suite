@@ -3,18 +3,18 @@ DOCUMENT INFORMATION
 Document Name: SPECIFICATIONS.md
 Author: Bruno DELNOZ
 Email: bruno.delnoz@protonmail.com
-Version: v2.0.0
-Date / Time: 2026-09-16 02:30
+Version: v2.1.1
+Date / Time: 2026-09-16 03:05
 Project: Package scan WIFI / wifi_air_suite.sh
-Short description: Task-scoped specification for v2.0.0 interval capture and per-slice post-processing.
+Short description: Task-scoped specification for v2.1.1 local monitor-helper layout while preserving v2.1.0 features.
 -->
-# SPECIFICATIONS — Interval Capture — v2.0.0
+# SPECIFICATIONS — Local monitor helper layout — v2.1.1
 
 ## 1. Purpose
-Add periodic CAPTURE slicing so one long logical session produces independent finalized result sets at the requested interval.
+Preserve the v2.0.0 interval-capture workflow while adding a Markdown equivalent of every filtered CSV and optional automatic opening in Kate.
 
 ## 2. Scope
-This task adds `--interval MINUTES`, `--accept`, and per-slice scheduling of existing post-processing.
+The v2.1.0 interval, filtered Markdown and `--open-kate` behavior remains baseline. v2.1.1 changes only the repository/helper location: `set_unset_to_monitor.sh` is now beside `wifi_air_suite.sh`.
 
 ## 3. Existing behavior to preserve
 
@@ -74,6 +74,28 @@ Without interval, preserve previous single-capture scheduling.
 ### FR-13 — action isolation
 No interval boundary triggers CHECK, CRACK or ATTACK.
 
+
+### FR-12 — Filtered Markdown
+Every successful `--post-process` must generate one `*.filtered.md` from the corresponding `*.filtered.csv` in `.results/filtered/`. The Markdown must represent the already-filtered dataset and must not reimplement exclusion decisions.
+
+### FR-13 — Markdown structure
+The Markdown must contain separate `Access Points` and `Stations / Clients` sections rendered as Markdown tables using the columns present in the filtered CSV.
+
+### FR-14 — `--open-kate`
+When explicitly enabled, `--open-kate` must open the newly created filtered Markdown in Kate after each post-process. It is valid only with `--capture` and requires `--post-process`.
+
+### FR-15 — Non-blocking editor
+Kate must be launched asynchronously. The capture loop must not wait for the editor to close before the next interval.
+
+### FR-16 — Generated copy
+The filtered Markdown must also be copied to `.results/generated/` like the other generated post-process artifacts.
+
+### FR-17 — Local monitor helper
+`set_unset_to_monitor.sh` must be resolved from the same directory as `wifi_air_suite.sh` using `$BASE_DIR/set_unset_to_monitor.sh`.
+
+### FR-18 — No historical helper dependency
+The current implementation must not require `../tools/monitor/set_unset_to_monitor.sh` or any parent-project helper tree.
+
 ## 5. Non-functional requirements
 
 - preserve `.results/`;
@@ -91,6 +113,7 @@ No interval boundary triggers CHECK, CRACK or ATTACK.
 --duration SECONDS
 --infinite
 --post-process
+--open-kate
 --no-post-process
 --archive-old
 --spinner
@@ -169,3 +192,15 @@ Changing CAP/CSV formats, changing `.results/`, changing duration unit, automati
 
 ### v1.0.13-SOLO414 baseline
 Live PTY display, bounded timed stop and corrected sudo/PTY behavior were the immediate pre-v2 baseline.
+
+## Changelog
+
+### v2.1.1 — 2026-09-16
+- Monitor helper moved to the main script directory.
+- `MONITOR_HELPER` now resolves from `$BASE_DIR`.
+- All v2.1.0 capture/post-process/Kate behavior is preserved.
+
+### v2.1.0 — 2026-09-16
+- Added filtered Markdown generation from the filtered CSV.
+- Added `--open-kate`.
+- Added non-blocking Kate launch and generated-directory copy.

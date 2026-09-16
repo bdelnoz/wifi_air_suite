@@ -3,12 +3,12 @@ DOCUMENT INFORMATION
 Document Name: README.md
 Author: Bruno DELNOZ
 Email: bruno.delnoz@protonmail.com
-Version: v2.0.0
-Date / Time: 2026-09-16 02:30
+Version: v2.1.1
+Date / Time: 2026-09-16 03:05
 Project: Package scan WIFI / wifi_air_suite.sh
 Short description: Project overview, canonical CLI, interval capture workflow, runtime layout and usage.
 -->
-# wifi_air_suite.sh — v2.0.0
+# wifi_air_suite.sh — v2.1.1
 
 ## Purpose
 
@@ -20,7 +20,57 @@ The operational filename remains exactly:
 wifi_air_suite.sh
 ```
 
-Version **v2.0.0** introduces interval-based capture sessions while preserving the existing action separation, runtime layout, output naming model, sudo flow, live PTY display and post-processing pipeline.
+Version **v2.1.1** keeps the v2.1.0 filtered-Markdown/Kate behavior and adapts the repository layout so the monitor helper lives directly beside the main script.
+
+## Main v2.1.1 change
+
+The public repository now uses this canonical root layout:
+
+```text
+wifi_air_suite/
+├── wifi_air_suite.sh
+├── set_unset_to_monitor.sh
+├── README.md
+├── INSTALL.md
+├── CHANGELOG.md
+├── WHY.md
+├── SPECIFICATIONS.md
+├── SPECIFICATIONS_FR.md
+├── SPECIFICATIONS_GLOBAL.md
+├── SPECIFICATIONS_GLOBAL_FR.md
+├── myinfo/
+└── .results/
+```
+
+`wifi_air_suite.sh` resolves the helper with:
+
+```text
+$BASE_DIR/set_unset_to_monitor.sh
+```
+
+The historical `tools/monitor/set_unset_to_monitor.sh` location is no longer used.
+
+## Main v2.1.0 feature
+
+When `--post-process` is enabled, every filtered CSV now also produces a Markdown equivalent in the same `filtered/` directory.
+
+Example:
+
+```text
+.results/filtered/20260916_025700_1-01.filtered.csv
+.results/filtered/20260916_025700_1-01.filtered.md
+```
+
+The Markdown file is generated from the already-filtered CSV, so exclusion logic is applied only once. It contains separate **Access Points** and **Stations / Clients** Markdown tables.
+
+To open each new Markdown file automatically in Kate:
+
+```bash
+./wifi_air_suite.sh --exec --capture --interface wlan0 \
+  --duration 3600 --interval 10 --post-process --open-kate --accept
+```
+
+`--open-kate` is asynchronous: the next capture interval starts without waiting for Kate to close. It requires `--post-process`.
 
 ## Main v2.0.0 feature
 
@@ -136,8 +186,9 @@ Existing commands using `--duration` therefore keep their previous meaning.
 Default:
 
 ```text
-cmd.analyse.airo.sniff/
+wifi_air_suite/
 ├── wifi_air_suite.sh
+├── set_unset_to_monitor.sh
 ├── myinfo/
 │   ├── exclusions.txt
 │   └── oui.txt

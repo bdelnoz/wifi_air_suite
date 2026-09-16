@@ -3,12 +3,12 @@ DOCUMENT INFORMATION
 Document Name: INSTALL.md
 Author: Bruno DELNOZ
 Email: bruno.delnoz@protonmail.com
-Version: v2.0.0
-Date / Time: 2026-09-16 02:30
+Version: v2.1.1
+Date / Time: 2026-09-16 03:05
 Project: Package scan WIFI / wifi_air_suite.sh
 Short description: Installation, prerequisites, initialization and first-run guide.
 -->
-# INSTALL — wifi_air_suite.sh — v2.0.0
+# INSTALL — wifi_air_suite.sh — v2.1.1
 
 ## 1. Target environment
 
@@ -19,20 +19,23 @@ The script is designed for Linux/Kali-style environments with Aircrack-ng toolin
 Expected operational location:
 
 ```text
-cmd.analyse.airo.sniff/
+wifi_air_suite/
 ```
 
-The executable must keep the exact name:
+The main script and monitor helper must be in the same directory:
 
 ```text
 wifi_air_suite.sh
+set_unset_to_monitor.sh
 ```
 
-Make it executable:
+Make both executable:
 
 ```bash
-chmod +x wifi_air_suite.sh
+chmod +x wifi_air_suite.sh set_unset_to_monitor.sh
 ```
+
+The main script resolves the helper as `$BASE_DIR/set_unset_to_monitor.sh`.
 
 ## 3. Check prerequisites
 
@@ -149,6 +152,20 @@ Infinite rolling ten-minute slices:
 --interval = minutes
 ```
 
+
+## Automatic filtered Markdown + Kate
+
+`--post-process` now also creates `*.filtered.md` beside every `*.filtered.csv`.
+
+To open each new Markdown result in Kate as soon as it is created:
+
+```bash
+./wifi_air_suite.sh --exec --capture --interface wlan0 \
+  --duration 3600 --interval 10 --post-process --open-kate --accept
+```
+
+When `--open-kate` is used, `kate` must be available in `PATH`. The editor is launched asynchronously and does not pause the interval loop. `--open-kate` requires `--post-process`.
+
 ## 10. Post-processing inputs
 
 Filtering uses:
@@ -209,7 +226,7 @@ The script validates sudo on the controlling terminal and refreshes the valid ti
 
 Installation is ready when:
 
-- `./wifi_air_suite.sh --version` prints `v2.0.0`;
+- `./wifi_air_suite.sh --version` prints `v2.1.1`;
 - `./wifi_air_suite.sh --prerequis` reports required capture commands;
 - interval simulation parses successfully;
 - `.results/` can be initialized;

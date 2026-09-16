@@ -3,12 +3,50 @@ DOCUMENT INFORMATION
 Document Name: CHANGELOG.md
 Author: Bruno DELNOZ
 Email: bruno.delnoz@protonmail.com
-Version: v2.0.0
-Date / Time: 2026-09-16 02:30
+Version: v2.1.1
+Date / Time: 2026-09-16 03:05
 Project: Package scan WIFI / wifi_air_suite.sh
 Short description: Append-only external changelog synchronized with the script release history.
 -->
 # CHANGELOG — wifi_air_suite.sh
+
+## v2.1.1 - 2026-09-16 03:05 - Bruno DELNOZ
+
+### CHANGED
+
+- `set_unset_to_monitor.sh` is now expected in the same directory as `wifi_air_suite.sh`.
+- `MONITOR_HELPER` now resolves to `$BASE_DIR/set_unset_to_monitor.sh`.
+- The repository root itself is now the project root for these two operational files.
+- Documentation architecture examples were aligned with the public `bdelnoz/wifi_air_suite` repository layout.
+
+### PRESERVED
+
+- v2.1.0 automatic `*.filtered.md` generation.
+- `--open-kate`, `--interval`, `--post-process`, `--accept` and existing runtime output paths.
+- Existing monitor/managed behavior; only the helper location changed.
+
+---
+
+## v2.1.0 - 2026-09-16 02:57 - Bruno DELNOZ
+
+### ADDED
+
+- Automatic `*.filtered.md` generation during `--post-process`.
+- Markdown tables for both Access Points and Stations / Clients, generated from the already-filtered CSV.
+- `--open-kate` to open each newly created filtered Markdown file in Kate.
+
+### CHANGED
+
+- Filtered Markdown files are stored in `.results/filtered/` beside their matching `*.filtered.csv`.
+- Filtered Markdown files are also copied into `.results/generated/`.
+- `--open-kate` requires `--post-process`, is CAPTURE-only, and runs Kate asynchronously so capture intervals continue immediately.
+
+### PRESERVED
+
+- Existing filtered CSV and enriched CSV formats.
+- Existing v2.0.0 interval behavior, naming scheme, `--accept`, runtime tree and capture/check/crack separation.
+
+---
 
 ## v2.0.0 - 2026-09-16 02:30 - Bruno DELNOZ
   MAJOR:

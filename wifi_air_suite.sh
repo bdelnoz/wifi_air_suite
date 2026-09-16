@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# PATH         : ./cmd.analyse.airo.sniff/wifi_air_suite.sh
+# PATH         : ./wifi_air_suite.sh
 # SCRIPT NAME  : wifi_air_suite.sh
 # AUTHOR       : Bruno DELNOZ
 # EMAIL        : bruno.delnoz@protonmail.com
 # TARGET USAGE : Wi-Fi RXH / Package scan WIFI
-# VERSION      : v2.0.0
-# DATE         : 2026-09-16 02:30
+# VERSION      : v2.1.1
+# DATE         : 2026-09-16 03:05
 # ==============================================================================
 #
 # CLI / TASK CONTRACT PRINCIPLE
@@ -58,6 +58,31 @@
 # ==============================================================================
 # CHANGELOG
 # ==============================================================================
+# v2.1.1 - 2026-09-16 03:05 - Bruno DELNOZ
+#   CHANGED:
+#   - set_unset_to_monitor.sh is now resolved from the same directory as
+#     wifi_air_suite.sh instead of PROJECT_ROOT/tools/monitor/.
+#   - PROJECT_ROOT now equals BASE_DIR because the public repository root is the
+#     directory that contains wifi_air_suite.sh and set_unset_to_monitor.sh.
+#   PRESERVED:
+#   - v2.1.0 filtered Markdown generation, --open-kate, interval capture,
+#     --post-process, --accept, runtime layout and all business actions.
+#
+# v2.1.0 - 2026-09-16 02:57 - Bruno DELNOZ
+#   ADDED:
+#   - Generates a Markdown equivalent of each filtered CSV during --post-process.
+#     The file is stored beside the CSV as *.filtered.md in .results/filtered/.
+#   - --open-kate opens each newly generated filtered Markdown file in Kate.
+#     Kate is started asynchronously so capture intervals continue immediately.
+#   - The filtered Markdown contains separate Access Points and Stations / Clients
+#     tables generated from the already-filtered CSV; filtering logic is not duplicated.
+#   CHANGED:
+#   - Generated filtered Markdown files are also copied to .results/generated/.
+#   - --open-kate requires --post-process and is valid only with --capture.
+#   PRESERVED:
+#   - Existing filtered CSV, enriched CSV, CAP/CSV naming, interval behavior,
+#     --accept semantics, directories and behavior without --open-kate.
+#
 # v2.0.0 - 2026-09-16 02:30 - Bruno DELNOZ
 #   MAJOR:
 #   - Adds interval-based CAPTURE sessions while preserving the existing CLI,
@@ -217,8 +242,8 @@
 set -u
 IFS=$'\n\t'
 
-VERSION="v2.0.0"
-SCRIPT_DATE="2026-09-16 02:30"
+VERSION="v2.1.1"
+SCRIPT_DATE="2026-09-16 03:05"
 SCRIPT_AUTHOR="Bruno DELNOZ"
 SCRIPT_EMAIL="bruno.delnoz@protonmail.com"
 
@@ -227,8 +252,8 @@ SCRIPT_EMAIL="bruno.delnoz@protonmail.com"
 # ==============================================================================
 
 BASE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd -- "$BASE_DIR/.." && pwd)"
-MONITOR_HELPER="$PROJECT_ROOT/tools/monitor/set_unset_to_monitor.sh"
+PROJECT_ROOT="$BASE_DIR"
+MONITOR_HELPER="$BASE_DIR/set_unset_to_monitor.sh"
 
 MYINFO_DIR="$BASE_DIR/myinfo"
 EXCLUSION_FILE="$MYINFO_DIR/exclusions.txt"
@@ -265,6 +290,7 @@ INFINITE=0
 INTERVAL_MINUTES=""
 POST_PROCESS=0
 ACCEPT_MODE=0
+OPEN_KATE=0
 ARCHIVE_OLD=0
 SPINNER=0
 
@@ -502,9 +528,14 @@ BUSINESS OPTIONS:
       CTRL-C.
 
   --post-process
-      Generate copied raw CSV, filtered CSV and OUI-enriched CSV outputs.
-      With --interval, post-process runs after EACH completed interval before
-      the next interval starts.
+      Generate copied raw CSV, filtered CSV, filtered Markdown and
+      OUI-enriched CSV outputs. With --interval, post-process runs after EACH
+      completed interval before the next interval starts.
+
+  --open-kate
+      Open each newly generated *.filtered.md in Kate immediately after creation.
+      Requires --post-process. Kate is launched asynchronously and does not block
+      the next capture interval.
 
   --accept
       Compatibility option for non-interactive acceptance semantics.
@@ -595,7 +626,7 @@ EXAMPLES:
 
   ./wifi_air_suite.sh --simulate --capture --interface wlan0 -d 20 --post-process
   ./wifi_air_suite.sh --exec --capture --interface wlan0 -d 20 --post-process
-  ./wifi_air_suite.sh --exec --capture --interface wlan0 --duration 3600 --interval 10 --post-process --accept
+  ./wifi_air_suite.sh --exec --capture --interface wlan0 --duration 3600 --interval 10 --post-process --open-kate --accept
   ./wifi_air_suite.sh --exec --capture --interface wlan0 --infinite --interval 10 --post-process --accept
   ./wifi_air_suite.sh --exec --capture --interface wlan0 --infinite --post-process
 
@@ -824,6 +855,11 @@ parse_args() {
                 shift
                 ;;
 
+            --open-kate)
+                OPEN_KATE=1
+                shift
+                ;;
+
             --no-post-process)
                 POST_PROCESS=0
                 shift
@@ -930,6 +966,11 @@ parse_args() {
 
     if [[ -n "$INTERVAL_MINUTES" && "$ACTION" != "capture" ]]; then
         die "--interval est disponible uniquement avec --capture."
+    fi
+
+    if (( OPEN_KATE == 1 )); then
+        [[ "$ACTION" == "capture" ]] || die "--open-kate est disponible uniquement avec --capture."
+        (( POST_PROCESS == 1 )) || die "--open-kate exige --post-process."
     fi
 
     BASE_WLAN_IFACE="$(derive_base_iface "$REQUESTED_IFACE")"
@@ -1400,6 +1441,7 @@ INFINITE=$INFINITE
 INTERVAL_MINUTES=$INTERVAL_MINUTES
 POST_PROCESS=$POST_PROCESS
 ACCEPT_MODE=$ACCEPT_MODE
+OPEN_KATE=$OPEN_KATE
 ARCHIVE_OLD=$ARCHIVE_OLD
 SPINNER=$SPINNER
 
@@ -1567,6 +1609,8 @@ simulation_stop() {
                     "Would use duration: ${DURATION:-INFINITE}" \
                     "Would use interval minutes: ${INTERVAL_MINUTES:-DISABLED}" \
                     "Would post-process after each completed interval: $POST_PROCESS" \
+                    "Would generate filtered Markdown during post-process: $POST_PROCESS" \
+                    "Would open filtered Markdown in Kate: $OPEN_KATE" \
                     "Would accept non-interactive confirmations: $ACCEPT_MODE" \
                     "Would never launch aircrack-ng from CAPTURE"
                 ;;
@@ -1853,9 +1897,98 @@ enrich_csv() {
     ' "$input" > "$output"
 }
 
+filtered_csv_to_markdown() {
+    local input="$1"
+    local output="$2"
+    local source_name
+
+    [[ -s "$input" ]] || {
+        warn "CSV filtré vide/introuvable pour Markdown : $input"
+        return 1
+    }
+
+    source_name="$(basename "$input")"
+
+    awk -F',' -v source_name="$source_name" -v generated_at="$(date '+%Y-%m-%d %H:%M:%S')" '
+        function trim(value) {
+            gsub(/\r$/, "", value)
+            sub(/^[[:space:]]+/, "", value)
+            sub(/[[:space:]]+$/, "", value)
+            return value
+        }
+
+        function cell(value) {
+            value = trim(value)
+            gsub(/\\/, "\\\\", value)
+            gsub(/\|/, "\\|", value)
+            return value
+        }
+
+        function print_row(    i) {
+            printf "|"
+            for (i = 1; i <= NF; i++) {
+                printf " %s |", cell($i)
+            }
+            printf "\n"
+        }
+
+        function print_separator(    i) {
+            printf "|"
+            for (i = 1; i <= NF; i++) {
+                printf " --- |"
+            }
+            printf "\n"
+        }
+
+        BEGIN {
+            print "# Wi-Fi filtered results"
+            print ""
+            print "- Source: `" source_name "`"
+            print "- Generated: " generated_at
+            print ""
+        }
+
+        /^[[:space:]]*$/ { next }
+
+        $1 ~ /^[[:space:]]*BSSID[[:space:]]*$/ {
+            print "## Access Points"
+            print ""
+            print_row()
+            print_separator()
+            next
+        }
+
+        $1 ~ /^[[:space:]]*Station MAC[[:space:]]*$/ {
+            print ""
+            print "## Stations / Clients"
+            print ""
+            print_row()
+            print_separator()
+            next
+        }
+
+        { print_row() }
+    ' "$input" > "$output"
+}
+
+open_markdown_in_kate() {
+    local md_file="$1"
+
+    (( OPEN_KATE == 1 )) || return 0
+
+    if ! command -v kate >/dev/null 2>&1; then
+        warn "--open-kate demandé mais Kate est introuvable dans PATH."
+        return 1
+    fi
+
+    info "Ouverture Kate      : $md_file"
+    kate "$md_file" >/dev/null 2>&1 &
+    return 0
+}
+
 post_process() {
     local csv_in="$1"
-    local base csv_copy filtered enriched capfile
+    local base csv_copy filtered filtered_md enriched capfile
 
     [[ -s "$csv_in" ]] || {
         warn "CSV vide/introuvable pour post-process : $csv_in"
@@ -1865,10 +1998,12 @@ post_process() {
     base="$(basename "$csv_in")"
     csv_copy="$CSV_DIR/$base"
     filtered="$FILTERED_DIR/${base%.csv}.filtered.csv"
+    filtered_md="$FILTERED_DIR/${base%.csv}.filtered.md"
     enriched="$ENRICHED_DIR/${base%.csv}.enriched.csv"
 
     cp -f "$csv_in" "$csv_copy"
     filter_csv "$csv_in" "$filtered"
+    filtered_csv_to_markdown "$filtered" "$filtered_md" || true
     enrich_csv "$filtered" "$enriched" || true
 
     capfile="${csv_in%.csv}.cap"
@@ -1876,13 +2011,17 @@ post_process() {
     [[ -f "$capfile" ]] && cp -f "$capfile" "$GENERATED_DIR/" 2>/dev/null || true
     cp -f "$csv_copy" "$GENERATED_DIR/" 2>/dev/null || true
     cp -f "$filtered" "$GENERATED_DIR/" 2>/dev/null || true
+    [[ -f "$filtered_md" ]] && cp -f "$filtered_md" "$GENERATED_DIR/" 2>/dev/null || true
     [[ -f "$enriched" ]] && cp -f "$enriched" "$GENERATED_DIR/" 2>/dev/null || true
     [[ -f "$GLOBAL_LOG_FILE" ]] && cp -f "$GLOBAL_LOG_FILE" "$GENERATED_DIR/" 2>/dev/null || true
 
     info "CSV brut copié  : $csv_copy"
     info "CSV filtré      : $filtered"
+    [[ -f "$filtered_md" ]] && info "MD filtré       : $filtered_md"
     [[ -f "$enriched" ]] && info "CSV enrichi     : $enriched"
     info "Generated       : $GENERATED_DIR"
+
+    [[ -f "$filtered_md" ]] && open_markdown_in_kate "$filtered_md" || true
 }
 
 show_latest_csv() {
@@ -2100,6 +2239,9 @@ run_capture() {
     simulation_stop
     ensure_dirs
     capture_deps
+    if (( OPEN_KATE == 1 )); then
+        need_cmd kate
+    fi
     sudo_ready
     auto_clean_tmp
     register_runtime_pid
@@ -2112,6 +2254,7 @@ run_capture() {
     info "Durée totale       : ${DURATION:-INFINITE}"
     info "Intervalle         : ${INTERVAL_MINUTES:-DISABLED}${INTERVAL_MINUTES:+ minute(s)}"
     info "Post-process       : $POST_PROCESS"
+    info "Open Kate          : $OPEN_KATE"
     info "Accept             : $ACCEPT_MODE"
 
     if [[ -n "$INTERVAL_MINUTES" ]]; then
@@ -2172,6 +2315,8 @@ run_capture() {
         "Runtime root: $RUNTIME_DIR" \
         "Interval minutes: ${INTERVAL_MINUTES:-DISABLED}" \
         "Post-process enabled: $POST_PROCESS" \
+        "Filtered Markdown: $POST_PROCESS" \
+        "Open Kate: $OPEN_KATE" \
         "Accept mode: $ACCEPT_MODE" \
         "aircrack-ng not launched from CAPTURE"
 }
@@ -2540,6 +2685,25 @@ main "$@"
 
 
 # ==============================================================================
+# v2.1.0 FILTERED MARKDOWN / KATE IMPLEMENTATION NOTE
+# ==============================================================================
+# When --post-process is active, the already-filtered CSV is converted to a
+# Markdown file in the same filtered directory:
+#
+#   .results/filtered/<prefix>-01.filtered.csv
+#   .results/filtered/<prefix>-01.filtered.md
+#
+# The Markdown conversion does not re-run exclusion decisions. It consumes the
+# filtered CSV produced by filter_csv(), so CSV and Markdown represent the same
+# filtered dataset. Access-point and station sections are rendered as Markdown
+# tables. The Markdown file is also copied to .results/generated/.
+#
+# --open-kate is optional and requires --post-process. When enabled, each newly
+# created filtered Markdown file is sent to Kate asynchronously. The capture
+# loop never waits for the editor to close before starting the next interval.
+# ==============================================================================
+
+# ==============================================================================
 # v2.0.0 INTERVAL CAPTURE IMPLEMENTATION NOTE
 # ==============================================================================
 # --duration remains seconds. --interval is minutes.
@@ -2558,4 +2722,18 @@ main "$@"
 #
 # --accept is parsed for CLI compatibility and future non-interactive gates. It
 # does not and must not bypass sudo authentication.
+# ==============================================================================
+
+
+# ==============================================================================
+# v2.1.1 LOCAL MONITOR HELPER IMPLEMENTATION NOTE
+# ==============================================================================
+# The public repository now keeps set_unset_to_monitor.sh beside
+# wifi_air_suite.sh. BASE_DIR is therefore the canonical repository/runtime
+# source directory and the helper path is resolved as:
+#
+#   MONITOR_HELPER="$BASE_DIR/set_unset_to_monitor.sh"
+#
+# No fallback to the historical tools/monitor/ path is used. A missing or
+# non-executable helper is reported by the existing prerequisite/monitor checks.
 # ==============================================================================
