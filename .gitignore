@@ -1,0 +1,144 @@
+# ==============================================================================
+# Package scan WIFI / wifi_air_suite.sh
+# Local/runtime exclusions
+# Version: v1.0.13-SOLO414
+# Date: 2026-09-15 22:38
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Active runtime data
+# ------------------------------------------------------------------------------
+.results/
+.results.zip
+.results-*.zip
+.results_*.zip
+
+# Obsolete runtime typo from historical versions
+.resultss/
+.resultss.zip
+
+# ------------------------------------------------------------------------------
+# Local operator input / identity data
+# ------------------------------------------------------------------------------
+# Contains exclusions, local OUI database and derived local identification data.
+# The script recreates the directory when required.
+myinfo/
+
+# ------------------------------------------------------------------------------
+# Historical / archive / generated package directories
+# ------------------------------------------------------------------------------
+.old/
+.zip/
+.docs/
+.backup/
+backups/
+
+# Package archives
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+
+# ------------------------------------------------------------------------------
+# Wireless capture / scanner output
+# ------------------------------------------------------------------------------
+*.cap
+*.pcap
+*.pcapng
+*.ivs
+*.kismet.csv
+*.kismet.netxml
+*.log.csv
+
+# Runtime reports / scan tables should normally already live under .results/
+# but these patterns protect against accidental creation at repository root.
+airodump-*.log
+capture-*.log
+sniff-*.log
+
+# ------------------------------------------------------------------------------
+# Temporary / process state
+# ------------------------------------------------------------------------------
+*.pid
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*~
+.#*
+.DS_Store
+Thumbs.db
+
+# ------------------------------------------------------------------------------
+# Python / tooling caches
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# ------------------------------------------------------------------------------
+# IDE / editor metadata
+# ------------------------------------------------------------------------------
+.idea/
+.vscode/
+.kate-swp
+*.kate-swp
+
+# ------------------------------------------------------------------------------
+# Shell/tool transient output
+# ------------------------------------------------------------------------------
+nohup.out
+core
+core.*
+*.trace
+
+# ------------------------------------------------------------------------------
+# Explicitly keep canonical source/documentation files trackable
+# ------------------------------------------------------------------------------
+!.gitignore
+!wifi_air_suite.sh
+!README.md
+!CHANGELOG.md
+!INSTALL.md
+!WHY.md
+!SPECIFICATIONS.md
+!SPECIFICATIONS_FR.md
+!SPECIFICATIONS_GLOBAL.md
+!SPECIFICATIONS_GLOBAL_FR.md
+
+# ==============================================================================
+# Notes
+# ==============================================================================
+# - .results/ is the ONLY current runtime root.
+# - .resultss/ is legacy/obsolete and must not return to source control.
+# - myinfo/ is local user state and can include MAC addresses or a large OUI DB.
+# - Markdown analysis reports stored inside .results/ are intentionally ignored.
+# - Source and repository documentation remain visible to Git.
+# ==============================================================================
+# PROJECT SPECIFIC
+uploads
+__pycache__
+*.log
+*.db
+creation_log
+*-swp
+# ========================================
+# Template: shell
+# Added: 2026-02-04 22:19:59
+logs/
+output/
+infos/
+result/
+results/
+*.rar
+certs/
+secrets/
+.secrets
