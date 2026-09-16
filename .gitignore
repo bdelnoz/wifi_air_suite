@@ -123,22 +123,3 @@ core.*
 # - Markdown analysis reports stored inside .results/ are intentionally ignored.
 # - Source and repository documentation remain visible to Git.
 # ==============================================================================
-# PROJECT SPECIFIC
-uploads
-__pycache__
-*.log
-*.db
-creation_log
-*-swp
-# ========================================
-# Template: shell
-# Added: 2026-02-04 22:19:59
-logs/
-output/
-infos/
-result/
-results/
-*.rar
-certs/
-secrets/
-.secrets
