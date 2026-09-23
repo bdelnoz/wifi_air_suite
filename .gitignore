@@ -1,0 +1,78 @@
+myinfo/
+.results/
+.old/
+tmp/
+logs/
+cap/
+csv/
+mycsv/
+csvenrich/
+generated/
+*.cap
+*.pcap
+*.pcapng
+*.log
+*.zip
+*~
+*.swp
+.DS_Store
+myinfo/oui.txt.bak
+# bt_air_suite runtime
+.results/
+*.log
+*.pid
+*.tmp
+*.bak
+*.swp
+*.btsnoop
+
+# archives / local history
+.old/
+.zip/
+*.zip
+*.tar.gz
+*.rar
+
+# secrets / local material
+secrets/
+.secrets
+certs/
+
+# Python/editor noise if ever used around the repo
+__pycache__/
+
+# SOLO / local runtime safeguards
+.docs/
+.tmp/
+.private/
+.secrets/
+.log/
+.logs/
+.tracking_data/
+.report/
+.reports/
+.webactivity_reports/
+.exported_activity/
+.result/
+logs/
+output/
+.output/
+infos/
+.info/
+uploads/
+creation_log/
+*RULES_PRIVATE*
+
+
+
+# PROJECT SPECIFIC
+uploads
+__pycache__
+*.db
+creation_log
+*-swp
+# ========================================
+# Template: shell
+# Added: 2026-02-04 22:19:59
+result/
+results/
