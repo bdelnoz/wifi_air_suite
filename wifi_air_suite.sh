@@ -5,7 +5,7 @@
 # AUTHOR       : Bruno DELNOZ
 # EMAIL        : bruno.delnoz@protonmail.com
 # TARGET USAGE : Wi-Fi RXH / Package scan WIFI
-# VERSION      : v2.1.4
+# VERSION      : v3.0.0
 # DATE         : 2026-09-23 23:37
 # ==============================================================================
 #
@@ -59,6 +59,19 @@
 # ==============================================================================
 # CHANGELOG
 # ==============================================================================
+# v3.0.0 - 2026-09-23 23:37 - Bruno DELNOZ
+#   MAJOR:
+#   - Establishes a clean v3 baseline from the validated v2.1.4 implementation.
+#   - Consolidates the complete documentation set and Product Guide for the
+#     current CLI, runtime layout, capture workflow, OUI maintenance and
+#     targeted BSSID/channel capture.
+#   PRESERVED:
+#   - No hidden behavioral rewrite: v2.1.4 operational semantics are preserved.
+#   - --channel N remains capture-only, requires --bssid, and replaces the
+#     default multi-channel list only when explicitly supplied.
+#   - --nolog, --update-oui, interval capture, post-processing, Kate integration,
+#     exclusions, check/crack separation and authorized/lab action gates remain.
+#
 # v2.1.4 - 2026-09-23 23:37 - Bruno DELNOZ
 #   ADDED:
 #   - --channel N for targeted CAPTURE of a specific BSSID on one Wi-Fi channel.
@@ -286,7 +299,7 @@
 set -u
 IFS=$'\n\t'
 
-VERSION="v2.1.4"
+VERSION="v3.0.0"
 SCRIPT_DATE="2026-09-23 23:37"
 SCRIPT_AUTHOR="Bruno DELNOZ"
 SCRIPT_EMAIL="bruno.delnoz@protonmail.com"

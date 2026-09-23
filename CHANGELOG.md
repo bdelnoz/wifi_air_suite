@@ -1,10 +1,19 @@
 # wifi_air_suite — Changelog
 
-Canonical version: **v2.1.4**
+Canonical version: **v3.0.0**
 
 The entries below are taken from the append-only changelog embedded in `wifi_air_suite.sh`.
 
 ```text
+v3.0.0 - 2026-09-23 23:37 - Bruno DELNOZ
+  MAJOR:
+  - Establishes a clean v3 baseline from the validated v2.1.4 implementation.
+  - Consolidates the complete documentation set and Product Guide for the current CLI.
+  PRESERVED:
+  - No hidden behavioral rewrite: v2.1.4 operational semantics are preserved.
+  - --channel N remains capture-only, requires --bssid, and narrows a targeted capture to one supported channel.
+  - --nolog, --update-oui, interval capture, post-processing, Kate integration, exclusions, and action separation remain unchanged.
+
 v2.1.4 - 2026-09-23 23:37 - Bruno DELNOZ
   ADDED:
   - --channel N for targeted CAPTURE of a specific BSSID on one Wi-Fi channel.

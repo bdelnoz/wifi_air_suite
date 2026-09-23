@@ -1,6 +1,6 @@
 # wifi_air_suite — Installation
 
-Version: **v2.1.4**
+Version: **v3.0.0**
 
 ## 1. Package layout
 

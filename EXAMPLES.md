@@ -1,6 +1,6 @@
 # wifi_air_suite — EXAMPLES
 
-Version: **v2.1.4**  
+Version: **v3.0.0**  
 Main command: `./wifi_air_suite.sh`
 
 This file is the exhaustive practical command catalog for the current CLI. It covers every action and every parsed option, common combinations, expected behavior, output locations, aliases, simulation modes and common invalid combinations.
@@ -52,7 +52,7 @@ Short form:
 Expected for this package:
 
 ```text
-v2.1.3
+v3.0.0
 ```
 
 ### Show the internal changelog
@@ -1390,4 +1390,4 @@ For long investigation sessions where the airodump terminal logs are not useful 
   --nolog
 ```
 
-This is the principal high-volume capture pattern for v2.1.3: independent 10-minute slices, per-slice processing, persistent analytical artifacts, no large terminal `.log` files.
+This is the principal high-volume capture pattern for v3.0.0: independent 10-minute slices, per-slice processing, persistent analytical artifacts, no large terminal `.log` files.

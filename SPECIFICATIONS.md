@@ -1,6 +1,6 @@
 # wifi_air_suite — Specifications
 
-Version: **v2.1.4**  
+Version: **v3.0.0**  
 Main script: `wifi_air_suite.sh`  
 Monitor helper: `set_unset_to_monitor.sh`
 
@@ -124,7 +124,7 @@ Live capture without spinner uses util-linux `script` to provide a PTY while mir
 
 ### `--nolog` / `--no-log`
 
-v2.1.2 adds an explicit no-persistent-log mode.
+v3.0.0 includes an explicit no-persistent-log mode.
 
 Internally, log sinks are redirected to `/dev/null`. Therefore:
 

@@ -1,10 +1,14 @@
 # wifi_air_suite
 
-Version **v2.1.4** — Wi-Fi capture, inspection, post-processing and authorized lab actions for Linux/Kali.
+Version **v3.0.0** — Wi-Fi capture, inspection, post-processing and authorized lab actions for Linux/Kali.
 
 The main entry point is `wifi_air_suite.sh`. Operational actions require the explicit `--exec` gate; `--simulate` provides a non-operational dry run. Capture is deliberately separated from check, crack and active lab actions.
 
-## v2.1.4 highlight: targeted channel capture
+## v3.0.0 major-release baseline
+
+`v3.0.0` is the clean major-release baseline built from the validated v2.1.4 code. It preserves the operational behavior already validated in v2.1.4 while consolidating the documentation and packaging around the complete current CLI.
+
+### Targeted channel capture with `--channel`
 
 `--channel N` restricts a targeted BSSID capture to one Wi-Fi channel. It is accepted only with `--capture` and requires `--bssid`. Without `--channel`, the existing multi-channel capture list is unchanged.
 
@@ -14,7 +18,7 @@ The main entry point is `wifi_air_suite.sh`. Operational actions require the exp
   --duration 300 --post-process --nolog
 ```
 
-## v2.1.3 highlight: `--update-oui`
+## v3.0.0 feature: `--update-oui`
 
 `--update-oui` refreshes `myinfo/oui.txt` from the IEEE Registration Authority public MA-L/OUI listing. The download is staged in `.results/tmp/`, validated, normalized to the format used by `wifi_air_suite`, and only then installed.
 
@@ -32,7 +36,7 @@ Simulation without modifying the database:
 
 See `EXAMPLES.md` for the exhaustive command catalog.
 
-## v2.1.2 highlight: `--nolog`
+## v3.0.0 feature: `--nolog` / `--no-log`
 
 `--nolog` (alias `--no-log`) disables persistent runtime `.log` files for the current invocation. It is intended for long or interval-based captures where terminal logs can consume a large amount of disk space.
 
@@ -45,7 +49,7 @@ With `--nolog`:
 - live `airodump-ng` remains visible in the terminal when the spinner is disabled;
 - existing log files are not deleted.
 
-Without `--nolog`, the v2.1.1 logging behavior is preserved.
+Without `--nolog`, persistent logging remains enabled, preserving the established capture behavior.
 
 ## Quick start
 
